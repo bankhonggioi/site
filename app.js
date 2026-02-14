@@ -4,8 +4,8 @@ var pathHistory = [{id: '', name: '🏠 Trang chủ'}];
 
 $(document).ready(function() {
     $('head').append(`
-        <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-        <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+        <link rel="stylesheet" href="https://cdn.plyr.io/3.8.4/plyr.css" />
+        <script src="https://cdn.plyr.io/3.8.4/plyr.js"></script>
         <style>
             .search-container { max-width: 800px; margin: 0 auto; }
             .form-control-dark { background-color: #2c2c2c; border: 1px solid #444; color: #fff; }
@@ -130,4 +130,33 @@ function updateBreadcrumb() {
 }
 function formatSize(b) { if(!b) return ''; const k=1024, s=['B','KB','MB','GB','TB'], i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i]; }
 function formatTime(t) { return t ? new Date(t).toLocaleDateString('vi-VN') : ''; }
-function getIcon(m, n) { if(m==='application/vnd.google-apps.folder') return '📁'; const e = n.split('.').pop().toLowerCase(), map={'mp4':'🎬','mkv':'🎬','mp3':'🎵','wav':'🎵','jpg':'🖼️','png':'🖼️','pdf':'📕','zip':'📦','rar':'📦','exe':'💾'}; return map[e]||'📄'; }
+function getIcon(mimeType, name) {
+    // Kích thước mặc định
+    const svgAttr = `xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"`;
+
+    if (mimeType === 'application/vnd.google-apps.folder') {
+        // SVG Thư mục (Màu vàng)
+        return `<svg ${svgAttr} class="text-warning"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"/></svg>`;
+    }
+
+    const ext = name.split('.').pop().toLowerCase();
+    
+    // SVG Video (Màu xanh dương)
+    if (['mp4', 'mkv', 'avi'].includes(ext)) {
+        return `<svg ${svgAttr} class="text-primary"><path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm4 0v6h8V1zm8 8H4v6h8zM1 1v2h2V1zm2 3H1v2h2zM1 7v2h2V7zm2 3H1v2h2zm-2 3v2h2v-2zM15 1h-2v2h2zm-2 3v2h2V4zm2 3h-2v2h2zm-2 3v2h2v-2zm2 3h-2v2h2z"/></svg>`;
+    }
+
+    // SVG archive
+    if (['rar', 'zip'].includes(ext)) {
+        return `<svg ${svgAttr} class="text-danger"><path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/></svg>`;
+    }
+
+    // SVG Hình ảnh (Màu xanh lơ)
+    if (['jpg', 'png', 'jpeg', 'gif'].includes(ext)) {
+        return `<svg ${svgAttr} class="text-info"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+  <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/></svg>`;
+    }
+
+    // Mặc định (File text thông thường)
+    return `<svg ${svgAttr} class="text-secondary"><path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3zM4.5 9a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4z"/></svg>`;
+}
